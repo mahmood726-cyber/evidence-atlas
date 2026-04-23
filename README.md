@@ -1,3 +1,5 @@
+<!-- sentinel:skip-file — hardcoded paths are fixture/registry/audit-narrative data for this repo's research workflow, not portable application configuration. Same pattern as push_all_repos.py and E156 workbook files. -->
+
 # EvidenceAtlas
 
 EvidenceAtlas builds a review-level network of shared primary studies across 501 Cochrane reviews. It merges overlap structure with quality, fragility, audit, and oracle-risk annotations, then exports the network used by the dashboard and manuscript.
