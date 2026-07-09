@@ -20,6 +20,7 @@ Output: data/network.json
 
 import argparse
 import csv
+import io
 import json
 import os
 import re
@@ -27,9 +28,22 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-# Ensure UTF-8 output on Windows
-import io
-sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
+
+def configure_utf8_stdout() -> None:
+    """Ensure UTF-8 output on Windows consoles.
+
+    Called from main() only. Deliberately NOT run at import time: reassigning
+    sys.stdout at module level corrupts pytest's output capture, which would
+    make this module unsafe to import inside a test suite.
+    """
+    try:
+        sys.stdout = io.TextIOWrapper(
+            sys.stdout.buffer, encoding="utf-8", errors="replace"
+        )
+    except (AttributeError, ValueError):
+        # sys.stdout may lack a .buffer (e.g. already wrapped or captured); skip.
+        pass
+
 
 SCRIPT_DIR = Path(__file__).resolve().parent
 DATA_DIR = SCRIPT_DIR / "data"
@@ -266,6 +280,8 @@ def main():
     parser.add_argument("--output", type=str, default=str(DATA_DIR / "network.json"),
                         help="Output JSON path")
     args = parser.parse_args()
+
+    configure_utf8_stdout()
 
     print("=== EvidenceAtlas Network Assembler ===")
     print()
